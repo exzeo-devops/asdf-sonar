@@ -12,7 +12,7 @@ install_sonarscanner() {
 	local operating_system="$(get_system)"
 
   local platform="${operating_system} ${arch}"
-  local binary_path="$install_path/bin/sonarscanner"
+  local binary_path="$install_path/bin/sonar-scanner"
   local download_url
 
   download_url="$(get_download_url "$version" "$platform")"
