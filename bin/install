@@ -56,6 +56,8 @@ install_sonarscanner() {
   unzip -q ${download_path} -d $tmp_download_dir
 
 	# ls $tmp_download_dir
+	ls ${install_path}
+	ls ${install_path}/bin
 
   cp -r ${tmp_download_dir}/${zip_folder} ${install_path}
   chmod +x ${binary_path}
