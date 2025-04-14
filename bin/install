@@ -47,17 +47,18 @@ install_sonarscanner() {
   fi
 
 	local zip_folder=$(get_sonar_zip_folder $filename)
+	echo "zip_folder: $zip_folder"
 
-  echo "Cleaning previous binaries"
-  rm -f $binary_path 2>/dev/null || true
+  # echo "Cleaning previous binaries"
+  # rm -f $binary_path 2>/dev/null || true
 
   echo "Copying binary"
-  unzip ${download_path} -d $tmp_download_dir
+  unzip ${download_path} -qd $tmp_download_dir
 
-	ls $tmp_download_dir
+	# ls $tmp_download_dir
 
-  cp -r ${tmp_download_dir}/${zip_folder} ${install_path}
-  chmod +x ${binary_path}
+  echo cp -r ${tmp_download_dir}/${zip_folder} ${install_path}
+  echo chmod +x ${binary_path}
 }
 
 get_sonar_zip_folder() {
