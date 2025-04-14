@@ -90,6 +90,7 @@ get_arch() {
   else
     ARCH=$(uname -m)
     case $ARCH in
+      arm64) ARCH="AArch64";;
       aarch64) ARCH="AArch64";;
       x86_64) ARCH="x64";;
 	  *)
