@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+install_sonarscanner() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+
+  local arch="$(get_arch)"
+  local operating_system="$(get_system)"
+
+  local platform="${operating_system} ${arch}"
+
+  local binary_path="$install_path/bin/sonar-scanner"
+  local download_url
+
+  download_url="$(get_download_url "$version" "$platform")"
+
+  if [ "$TMPDIR" = "" ]; then
+    local tmp_download_dir=$(mktemp -d -t sonarscannercli_XXXXXX)
+  else
+    local tmp_download_dir=$TMPDIR
+  fi
+
+  local filename=$(get_filename $download_url)
+
+  local download_path="$tmp_download_dir/$filename"
+
+  echo "Downloading octopus cli from ${download_url} to ${download_path}"
+
+  # capture error message from curl in memory
+  curl --retry 10 --retry-delay 2 -fLo $download_path $download_url 2> >(tee /tmp/curl_error >&2)
+  ERROR=$(</tmp/curl_error)
+
+  # retry with http1.1 if http2 error
+  if [[ $ERROR == *"HTTP/2 stream 0 was not closed cleanly"* ]]; then
+    echo $ERROR
+    echo "Retrying with --http1.1"
+    curl --http1.1 --retry 10 --retry-delay 2 -fLo $download_path $download_url
+  fi
+
+  if [ $? -ne 0 ]; then
+    echo $ERROR
+    echo "Failed to download octopus cli from ${download_url}"
+    exit 1
+  fi
+
+  local zip_folder=$(get_sonar_zip_folder $filename)
+
+  echo "Cleaning previous binaries"
+  rm -r ${install_path}/* 2>/dev/null || true
+
+  echo "Copying binary"
+  unzip -q ${download_path} -d $tmp_download_dir
+  cp -r ${tmp_download_dir}/${zip_folder}/* ${install_path}
+
+  chmod +x ${binary_path}
+}
+
+get_sonar_zip_folder() {
+  local filename="$1"
+  # Remove prefix "sonar-scanner-cli-"
+  # Remove suffix ".zip"
+  local core=${filename#sonar-scanner-cli-}
+  core=${core%.zip}
+  echo "sonar-scanner-$core"
+}
+
+get_system() {
+  OS=$(uname -s)
+  case $OS in
+    Linux) OS="Linux";;
+    Darwin) OS="macOS";;
+    *)
+      echo "Unsupported operating system: $OS"
+      exit 1
+      ;;
+  esac
+
+  echo $OS
+}
+
+get_arch() {
+  if [[ $ASDF_OCTOPUSCLI_OVERWRITE_ARCH != "" ]]; then
+    echo "$ASDF_OCTOPUSCLI_OVERWRITE_ARCH"
+  else
+    ARCH=$(uname -m)
+    case $ARCH in
+      arm64) ARCH="AArch64";;
+      aarch64) ARCH="AArch64";;
+      x86_64) ARCH="x64";;
+      *)
+        echo "Unsupported architecture: $ARCH"
+        exit 1
+        ;;
+    esac
+    echo "$ARCH"
+  fi
+}
+
+get_filename() {
+  local url="$1"
+  basename "$url"
+}
+
+get_download_url() {
+  local version="$1"
+  local platform="$2"
+
+  url=$(curl -s https://downloads.sonarsource.com/sonarqube/update/scannercli.json |
+    jq -r --arg version "$version" --arg platform "$platform" '
+      .versions[]
+      | select(.version == $version)
+      | .downloadURL[]
+      | select(.label == $platform)
+      | .url
+    ')
+
+  echo $url
+}
+
+install_sonarscanner "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"

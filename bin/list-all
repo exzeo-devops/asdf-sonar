@@ -1,0 +1,21 @@
+releases_path=https://downloads.sonarsource.com/sonarqube/update/scannercli.json
+cmd="curl --retry 10 --retry-delay 2 -s"
+cmd="$cmd ${releases_path}"
+
+# Clean and correct version sorting
+function sort_versions() {
+  awk -F. '
+    {
+      orig = $0;
+      n1 = $1; n2 = ($2 == "") ? 0 : $2;
+      n3 = ($3 == "") ? 0 : $3;
+      n4 = ($4 == "") ? 0 : $4;
+      printf "%04d.%04d.%04d.%04d %s\n", n1, n2, n3, n4, orig;
+    }
+  ' | sort | awk '{print $2}' | paste -sd' ' -
+}
+
+# Fetch all tag versions, clean them, and sort
+versions=$(eval "$cmd" | grep -oE '"version"[[:space:]]*:[[:space:]]*"v?[^"]+"' | sed -E 's/.*"v?([^"]+)"/\1/' | sort_versions)
+
+echo "$versions"
