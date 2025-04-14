@@ -69,17 +69,17 @@ get_sonar_zip_folder() {
 }
 
 get_system() {
-	OS=$(uname -s)
-	case $OS in
+  OS=$(uname -s)
+  case $OS in
     Linux) OS="Linux";;
     Darwin) OS="macOS";;
     *)
       echo "Unsupported operating system: $OS"
       exit 1
       ;;
-	esac
+  esac
 
-	echo $OS
+  echo $OS
 }
 
 get_arch() {
