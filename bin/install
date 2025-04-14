@@ -44,13 +44,14 @@ install_sonarscanner() {
     exit 1
   fi
 
-	mkdir -p "${install_path}"
-
   echo "Cleaning previous binaries"
   rm -f $binary_path 2>/dev/null || true
 
   echo "Copying binary"
   unzip ${download_path} -d $tmp_download_dir
+	ls $tmp_download_dir
+	ls $install_path
+
   cp -r ${tmp_download_dir} ${install_path}
   chmod +x ${binary_path}
 }
