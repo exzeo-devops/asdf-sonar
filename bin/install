@@ -51,8 +51,8 @@ install_sonarscanner() {
 
   echo "Copying binary"
   unzip ${download_path} -d $tmp_download_dir
-  echo cp -r ${tmp_download_dir} ${install_path}
-  echo chmod +x ${binary_path}
+  cp -r ${tmp_download_dir} ${install_path}
+  chmod +x ${binary_path}
 }
 
 get_system() {
