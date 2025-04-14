@@ -53,7 +53,7 @@ install_sonarscanner() {
   # rm -f $binary_path 2>/dev/null || true
 
   echo "Copying binary"
-  unzip ${download_path} -qd $tmp_download_dir
+  unzip -q ${download_path} -d $tmp_download_dir
 
 	# ls $tmp_download_dir
 
