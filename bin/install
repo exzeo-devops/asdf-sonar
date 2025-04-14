@@ -13,8 +13,6 @@ install_sonarscanner() {
 
   local platform="${operating_system} ${arch}"
 
-	echo "platform: $platform"
-
   local binary_path="$install_path/bin/sonar-scanner"
   local download_url
 
