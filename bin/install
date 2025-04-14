@@ -12,6 +12,9 @@ install_sonarscanner() {
 	local operating_system="$(get_system)"
 
   local platform="${operating_system} ${arch}"
+
+	echo "platform: $platform"
+
   local binary_path="$install_path/bin/sonar-scanner"
   local download_url
 
@@ -47,7 +50,6 @@ install_sonarscanner() {
   fi
 
 	local zip_folder=$(get_sonar_zip_folder $filename)
-	echo "zip_folder: $zip_folder"
 
   echo "Cleaning previous binaries"
   rm -r ${install_path}/* 2>/dev/null || true
