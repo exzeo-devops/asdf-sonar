@@ -50,7 +50,7 @@ install_sonarscanner() {
 	echo "zip_folder: $zip_folder"
 
   echo "Cleaning previous binaries"
-  rm -r ${install_path} 2>/dev/null || true
+  rm -r ${install_path}/ 2>/dev/null || true
 
   echo "Copying binary"
   unzip -q ${download_path} -d $tmp_download_dir
