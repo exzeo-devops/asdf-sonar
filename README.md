@@ -1,6 +1,6 @@
 # asdf-sonar
 
-[SonarScanner CLI](https://github.com/OctopusDeploy/cli) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
+[SonarScanner CLI](https://github.com/SonarSource/sonar-scanner-cli) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
 
 ## Install (pre-0.16.0)
 
