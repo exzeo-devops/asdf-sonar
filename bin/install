@@ -47,7 +47,7 @@ install_sonarscanner() {
     exit 1
   fi
 
-	local zip_folder=$(get_sonar_zip_folder $filename)
+  local zip_folder=$(get_sonar_zip_folder $filename)
 
   echo "Cleaning previous binaries"
   rm -r ${install_path}/* 2>/dev/null || true
@@ -60,7 +60,7 @@ install_sonarscanner() {
 }
 
 get_sonar_zip_folder() {
-	  local filename="$1"
+  local filename="$1"
   # Remove prefix "sonar-scanner-cli-"
   # Remove suffix ".zip"
   local core=${filename#sonar-scanner-cli-}
